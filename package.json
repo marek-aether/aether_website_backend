@@ -1,0 +1,39 @@
+{
+  "name": "artist-contest-backend",
+  "version": "1.0.0",
+  "description": "Backend for the Artist Contest application",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "nest start",
+    "build": "nest build",
+    "test": "jest",
+    "start:dev": "nest start --watch"
+  },
+  "dependencies": {
+    "@nestjs-hybrid-auth/all": "^1.3.0",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/core": "10.0.0",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/mongoose": "10.0.0",
+    "@nestjs/passport": "^10.0.3",
+    "@nestjs/platform-express": "^10.4.15",
+    "@nestjs/swagger": "^8.1.1",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "mongoose": "7.0.0",
+    "passport": "^0.7.0",
+    "passport-instagram": "^1.0.0",
+    "passport-jwt": "4.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "7.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "10.0.0",
+    "@nestjs/schematics": "10.0.0",
+    "@nestjs/testing": "10.0.0",
+    "@types/jest": "29.0.0",
+    "typescript": "5.0.0"
+  },
+  "license": "MIT"
+}
