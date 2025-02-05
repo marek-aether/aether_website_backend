@@ -1,5 +1,12 @@
-import { UseFacebookAuth } from '@nestjs-hybrid-auth/all';
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
 import { JwtAuthGuard } from '../middlewares/jwt-auth.guard';
 
@@ -9,27 +16,36 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: { email: string; password: string }) {
-    return this.authService.register(body);
+    const user = await this.authService.register(body);
+
+    return {
+      _id: user._id,
+      redirectUrl: 'http://localhost:3000/register',
+      accessToken: user.accessToken,
+    };
   }
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }) {
-    return this.authService.login(body);
-  }
-
-  @UseFacebookAuth()
-  @Get('facebook')
-  facebookLogin() {}
-
-  @UseFacebookAuth()
-  @Get('facebook/redirect')
-  async facebookLoginCallback(@Request() req) {
-    await this.authService.loginWithFacebook(req.hybridAuthResult);
+  async login(@Body() body: { email: string; password: string }, @Res() res) {
+    const resp = await this.authService.login(body);
+    res.cookie('token', resp.accessToken, {
+      httpOnly: true,
+      // secure: true, // Set to true in production (HTTPS)
+      // sameSite: 'strict',
+      maxAge: 3600000, // 1 hour
+    });
+    return res.send(resp);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('profile')
+  @Get('me')
   getProfile(@Request() req) {
-    return req.user; // Extracted from JWT payload
+    return req.user;
+  }
+
+  @Post('logout')
+  async logout(@Res() res) {
+    res.clearCookie('token');
+    return res.json({ message: 'Logged out' });
   }
 }

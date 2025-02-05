@@ -16,7 +16,15 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new this.userModel({ email, password: hashedPassword });
 
-    return newUser.save();
+    const payload = { email, sub: newUser._id };
+    const accessToken = this.jwtService.sign(payload);
+
+    await newUser.save();
+
+    return {
+      _id: newUser._id,
+      accessToken,
+    };
   }
 
   async login({ email, password }: { email: string; password: string }) {
@@ -28,34 +36,13 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    const payload = { email, sub: user._id }
-    const accessToken = this.jwtService.sign(payload)
+    const payload = { user, sub: user._id };
+    const accessToken = this.jwtService.sign(payload);
 
     return {
-      accessToken
-    };
-  }
-
-  async loginWithFacebook(profile: { instagramId: string, username: string, displayName: string }) {
-    // const user = await this.userModel.findOne({ instagramId: profile.instagramId });
-
-    // if (!user) {
-    //   //create user if does not exist
-    // }
-
-    // const payload = {
-    //   instagramId: profile.instagramId,
-    //   username: profile.username,
-    //   displayName: profile.displayName,
-    // };
-
-    console.log(profile)
-
-    // const accessToken = this.jwtService.sign(profile);
-
-    return {
-      // accessToken,
-      profile
+      _id: user._id,
+      accessToken,
+      user,
     };
   }
 }
