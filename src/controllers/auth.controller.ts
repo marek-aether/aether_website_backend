@@ -20,7 +20,7 @@ export class AuthController {
 
     return {
       _id: user._id,
-      redirectUrl: 'http://localhost:3000/register',
+      redirectUrl: 'https://aether-art.netlify.app/register',
       accessToken: user.accessToken,
     };
   }
